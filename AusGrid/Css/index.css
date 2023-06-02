@@ -1,0 +1,197 @@
+﻿.upload_image form{
+    margin-top:20px;
+}
+
+.upload_image form input{
+    display:block;
+    margin-bottom:20px;
+}
+
+.upload_image select{
+    margin-top:20px;
+}
+
+.upload_image img{
+    display:block;
+    max-width:25%;
+    margin-top:20px;
+}
+
+/*.line{
+    content:"";
+    margin:40px 0 40px 0;
+    border-bottom:1px solid black;
+}*/
+
+.w3-black_tab {
+    background-color: #002349;
+    color: white;
+    width: auto
+}
+
+.w3-input {
+    padding: 4px;
+}
+
+.w3-section, .w3-code {
+    margin-top: 4px !important;
+    margin-bottom: 1px !important;
+}
+.webgrid-pager {
+    text-align: center;
+}
+
+.webgrid-footer {
+    /*text-align: right;*/
+    display:none;
+}
+
+.webgrid-footer1 {
+   /* text-align: right;*/
+    display: none;
+}
+
+.web-table th {
+    background-color: #0B365B;
+    font-weight: bold;
+    color: white
+}
+
+.selected {
+    background-color: #87cefa;
+}
+
+.selected11 {
+    background-color: red;
+}
+
+.w3-check {
+    width: 18px;
+    height: 18px;
+}
+
+body {
+    font-family: Arial;
+    font-size: 10pt;
+}
+
+.Grid {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+}
+
+    .Grid th {
+        background-color: #F7F7F7;
+        font-weight: bold;
+    }
+
+    .Grid th, .Grid td {
+        padding: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .Grid, .Grid table td {
+        border: 0px solid #ccc;
+    }
+
+        .Grid th a, .Grid th a:visited {
+            color: #333;
+        }
+
+        .Grid td {
+            cursor: pointer;
+        }
+
+        .Grid .selected {
+            background-color: #87cefa;
+        }
+
+        .Grid .selected11 {
+            background-color: red;
+        }
+
+
+
+.w3-button1 {
+    background-color: gray;
+    color: white;
+}
+
+.securityCheck {
+    margin-left: 5%;
+}
+
+
+@media screen and (max-width: 768px) {
+    .camera-container {
+        width: 100%;
+        padding: 0 10px;
+        margin-left: 1%;
+    }
+
+    body {
+        width: 182%;
+        height: auto;
+    }
+
+    #OutListBoxHTML5 {
+        border: 1px solid black;
+    }
+
+    #video {
+        height: 300px;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    .camera-container {
+        width: 100%;
+        padding: 0 10px;
+        margin-left: 1%;
+    }
+
+    body {
+        width: 182%;
+        height: auto;
+    }
+
+    #OutListBoxHTML5 {
+        border: 1px solid black;
+    }
+
+    #video {
+        height: 300px;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .camera-container {
+        width: 100%;
+        padding: 0 10px;
+        margin-left: 1%;
+    }
+
+    body {
+        width: 182%;
+        height: auto;
+    }
+
+    #OutListBoxHTML5 {
+        border: 1px solid black;
+    }
+
+    #video {
+        height: 300px;
+        width: 100%;
+    }
+}
+.w3-right {
+    margin-right: auto;
+}
+.w3-input {
+    padding: 4px;
+}
+
+

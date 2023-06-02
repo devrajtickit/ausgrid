@@ -1,0 +1,645 @@
+﻿@using Bytescout.BarCodeReader
+@{ string scr = ViewBag.Img;
+    FoundBarcode[] barcodes = ViewBag.Barcodes; }
+<html xmlns="http://www.w3.org/1999/xhtml">
+@{ ViewBag.Title = "Pre_registration";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml"; }
+
+@Html.Raw(TempData["msg"])
+
+
+<head>
+
+    <script src="~/Scripts/index.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+
+    @{ var userInput = TempData["UserInput"] as string; }
+    @{var uRegRef = TempData["uRegRef"] as string; }
+
+    <script>
+    $(document).ready(function () {
+    var userInput = '@userInput';
+    if (userInput) {
+        $('#inputAllField').show(); // show the div element
+        } else {
+        $('#inputAllField').hide(); // hide the div element
+    }
+    });
+    </script>
+
+</head>
+<body>
+    <div class="upload_image">
+        @* <h3>Barcodes From Image (scans for all type of barcodes)</h3>*@
+        @*<form action="/home/index" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" />
+                <input type="submit" value="Upload file" />
+            </form>*@
+        @if (barcodes != null)
+        {
+            <select multiple>
+                @foreach (FoundBarcode item in barcodes)
+                {
+                    <option>@String.Format("{0} : {1}", item.Type, item.Value)</option>
+                }
+            </select>}
+        @if (scr != null)
+        {
+            <img src="/@scr" />}
+
+
+    </div>
+    <div class="line"></div>
+    <div class="upload_camera">
+        @*<h3>Barcodes From Camera</h3>*@
+        @*<div class="camera-container">*@
+        <div id="userMedia" style="display:none; height: 500px; width: 1182px">
+            <div class="w3-container ccc">
+                <div class="w3-row-padding">
+                    <table>
+                        <tr align="left" valign="top">
+                            <td valign="top">
+                                <h4 id="choiceU"> <b>Barcode Type To Scan (to start barcode scan - click START below)</b></h4>
+
+                                <select id="comboBoxBarCodeTypeHTML5" onchange="selectType(this)" hidden>
+                                    <option value="1">All Barcodes (slow)</option>
+                                    <option value="2">All Linear Barcodes (Code39, Code 128, EAN 13, UPCA, UPCE, etc.)</option>
+                                    <option value="3">All 2D Barcodes (QR Code, Aztec, DataMatrix, PDF417, etc.)</option>
+                                    <option value="4">Code 39c</option>
+                                    <option value="5">Code 128</option>
+                                    <option value="6">EAN 13</option>
+                                    <option value="7">UPCA</option>
+                                    <option value="8">GS1-128</option>
+                                    <option value="9">GS1DataBarExpanded</option>
+                                    <option value="10">GS1DataBarExpandedStacked </option>
+                                    <option value="11">GS1DataBarLimited</option>
+                                    <option value="12">GS1DataBarOmnidirectional</option>
+                                    <option value="13">GS1DataBarStacked</option>
+                                    <option value="14">I2of5</option>
+                                    <option value="15">Intelligent Mail</option>
+                                    <option value="16">Patch Code</option>
+                                    <option value="17">PDF 417</option>
+                                    <option value="18">QR Code</option>
+                                    <option value="19">Datamatrix</option>
+                                    <option value="20">Aztec</option>
+                                    <option value="21">MaxiCode</option>
+                                </select>
+
+                                <span style=" font-size:18px; ">Output barcode values read appears below: </span>
+                                <br />
+                                <form method="post" action="ValidatePre_registration">
+                                    <!-- decoding results appears in this listbox -->
+                                    @*<textarea style="width:500px; height:100px;" size="8" id="OutListBoxHTML5"></textarea>*@
+                                    <input type="text" id="OutListBoxHTML5" class="w3-border" name="uRegRef" value="@uRegRef" />&nbsp;<input id="Validate" style="color: black; font-size: small; font-weight: bold;" type="submit" value="Validate" />
+                                </form>
+                                <br />
+                                <input id="snap" style="color:black; font-weight:bold; font-size:small;" type="button" onclick="UploadToCloud();" value="START READING BARCODES..." />
+
+                                <input id="pause" style="color: black; font-size: small; font-weight: bold;" type="button" onclick="stopCall();" value="STOP" />
+                                <input id="ClearText" style="color: black; font-size: small; font-weight: bold;" type="button" onclick="Clear();" value="Clear" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <h4 id="report"></h4>
+
+
+
+                            </td>
+                            <td valign="top">
+                                <div class="camera-container">
+                                    <span id="WebcamPreview" hidden>Webcam preview shows below:</span>
+
+                                    <video id="video" width="640" height="400" hidden autoplay playsinline muted></video>
+
+                                    <!-- canvas with the output -->
+                                    <canvas id="canvasU" width="640" height="400" style="display:none"></canvas>
+                                </div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="w3-container">
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        @*Select User: @Html.DropDownListFor(m => m.sampleCode, new SelectList(Model.sampleCode, "Code", "Code2"), "Select User")*@
+                        @*@using (Html.BeginForm(""))*@
+                        <label>Sample Point Code</label>
+                        <select class="w3-input w3-border" id="clrefDropDown" name="StudentGender">
+                            <option value="0">--Select--</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <form name="PreReg" id="PreReg">
+                <div class="w3-container" id="inputAllField" hidden>
+                    <div class="w3-row-padding">
+                        <div class="w3-quarter">
+                            <label>Sample Type</label>
+                            @*<input class="w3-input w3-border" type="text" id="TXTSampType">*@
+                            <select class="w3-input w3-border" id="TXTSampType" name="StudentGender">
+                                <option value="0">--Select--</option>
+
+                            </select>
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Work Order No</label>
+                            <input class="w3-input w3-border" type="text" id="TXTorderNo">
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Operation Activity No</label>
+                            <input class="w3-input w3-border" type="text" id="TXTActivtyNo">
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Transformer</label>
+                            @*<input class="w3-input w3-border" type="text" id="TXTtransformer">*@
+                            <select class="w3-input w3-border" id="TXTtransformer" name="StudentGender">
+                                <option value="0">--Select--</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    @*<br />*@
+                    <div class="w3-row-padding">
+                        <div class="w3-quarter">
+                            <label>Sample</label>
+                            <input class="w3-input w3-border" type="text" id="TXTSample">
+                        </div>
+
+                        <div class="w3-quarter">
+                            <label>Winding</label>
+                            <input class="w3-input w3-border" type="text" id="TXTWinding">
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Ambient</label>
+                            <input class="w3-input w3-border" type="text" id="TXTAmbient">
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Sample Point (DGA)</label>
+                            @*<input class="w3-input w3-border" type="text" id="TXTSamplePoint">*@
+                            <select class="w3-input w3-border" id="TXTSamplePoint" name="StudentGender">
+                                <option value="0">--Select--</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    @*<br />*@
+
+                    @*<br />*@
+                    <div class="w3-row-padding">
+                        <div class="w3-quarter">
+                            <label>Sample Point (Oil Screen)</label>
+                            @*<input class="w3-input w3-border" type="text" id="TXTSamplePOil">*@
+                            <select class="w3-input w3-border" id="TXTSamplePOil" name="StudentGender">
+                                <option value="0">--Select--</option>
+                            </select>
+                        </div>
+                        <div class="w3-quarter">
+                            <label>Comment</label>
+                            <input class="w3-input w3-border" type="text" id="TXTComment">
+                        </div>
+                        <!--<div class="w3-quarter">
+                            <label>Test Reason</label>-->
+                        @*<input class="w3-input w3-border" type="text" id="TXTTestReson">*@
+                        <!--<select class="w3-input w3-border" id="TXTTestReson" name="StudentGender">
+                                <option value="Routine">Routine</option>
+                                <option value="Follow-up">Follow Up</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>-->
+
+                        <div class="w3-quarter">
+                            <label>Test Reason</label>
+                            <select class="w3-input w3-border" id="TXTTestReson" onchange="if (this.options[this.selectedIndex].value =='Other'){document.PreReg['Other'].style.visibility='visible'}else {document.PreReg['Other'].style.visibility='hidden'};">
+                                <option value="Routine">Routine</option>
+                                <option value="Follow-up">Follow Up</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="w3-quarter">
+                            <br />
+                            <input class="w3-input w3-border" type="text" id="TXTtestResonOther" name="Other" style="visibility:hidden;">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            @*<br />*@
+            @*--------------------Read only field---------------------*@
+
+
+            <div class="w3-container">
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        <label>Inventory No</label>
+                        <input class="w3-input w3-border" id="TxtInventory" type="text" placeholder="Inventory No" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Serial No</label>
+                        <input class="w3-input w3-border" id="TXTSerial" type="text" placeholder="Serial No" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Manufacturer</label>
+                        <input class="w3-input w3-border" id="TXTManufacture" type="text" placeholder="Manufacturer" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Sub Name</label>
+                        <input class="w3-input w3-border" id="TXTSubName" type="text" placeholder="Sub Name" readonly>
+                    </div>
+
+
+                </div>
+                @*<br />*@
+                <div class="w3-row-padding">
+
+                    <div class="w3-quarter">
+                        <label>Sub Prefix</label>
+                        <input class="w3-input w3-border" id="TXTSubPrefix" type="text" placeholder="Sub Prefix" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Sub no</label>
+                        <input class="w3-input w3-border" id="TXtSubNo" type="text" placeholder="Sub no" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Position No</label>
+                        <input class="w3-input w3-border" id="TXtPosition" type="text" placeholder="Position No" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Equipment</label>
+                        <input class="w3-input w3-border" id="TXtEquipment" type="text" placeholder="Equipment" readonly>
+                    </div>
+                </div>
+                @*<br />*@
+                <div class="w3-row-padding">
+
+                    <div class="w3-quarter">
+                        <label>Date Sampled</label>
+                        <input class="w3-input w3-border" id="TXTDate" type="date" placeholder="Date Sampled">
+
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Sampled by</label>
+                        <input class="w3-input w3-border" id="TXTSampledBy" type="text" placeholder="Sampled by" readonly>
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Clref</label>
+                        <input class="w3-input w3-border" id="TXTClref" type="text" placeholder="Clref">
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Flash (SWF) camera based capturing section -->
+            <!-- this div block will be shown when browser does not support user media so the only way is to capture with flash (swf) camera -->
+            <div id="flashDiv" style=" display:none; ">
+                <table>
+                    <tr align="left" valign="top">
+                        <td colspan="2"><h5 style=" color:Green; ">(FLASH based camera) This works in Internet Explorer 9+, Chrome, Firefox and other browsers with flash support. To enable web-cam access answer ALLOW when asked if you want to give access to webcam </h5></td>
+                    </tr>
+                    <tr align="left" valign="top">
+                        <td valign="top">
+                            <h4 id="choice"> <b>Barcode Type To Scan (to start barcode scan - click START below)</b></h4>
+                            <br />
+                            <select id="comboBoxBarCodeTypeFlash" onchange="selectType(this)">
+                                <option value="1">All Barcodes (slow)</option>
+                                <option value="2">All Linear Barcodes (Code39, Code 128, EAN 13, UPCA, UPCE, etc.)</option>
+                                <option value="3">All 2D Barcodes (QR Code, Aztec, DataMatrix, PDF417, etc.)</option>
+                                <option value="4">Code 39</option>
+                                <option value="5">Code 128</option>
+                                <option value="6">EAN 13</option>
+                                <option value="7">UPCA</option>
+                                <option value="8">GS1-128</option>
+                                <option value="9">GS1DataBarExpanded</option>
+                                <option value="10">GS1DataBarExpandedStacked </option>
+                                <option value="11">GS1DataBarLimited</option>
+                                <option value="12">GS1DataBarOmnidirectional</option>
+                                <option value="13">GS1DataBarStacked</option>
+                                <option value="14">I2of5</option>
+                                <option value="15">Intelligent Mail</option>
+                                <option value="16">Patch Code</option>
+                                <option value="17">PDF 417</option>
+                                <option value="18">QR Code</option>
+                                <option value="19">DataMatrix</option>
+                                <option value="20">Aztec</option>
+                                <option value="21">MaxiCode</option>
+                            </select>
+                            <br />
+                            <span style=" font-size:20px; ">Output barcode values read appears below: </span>
+                            <br />
+                            <!-- decoding results appears in this listbox -->
+                            <textarea style="width:500px; height:100px;" size="8" id="OutListBoxFlash"> </textarea>
+                            <br />
+                            <input type="button" style="color:black; font-weight:bold; font-size:large;" value="START READING BARCODES.." onclick="take_snapshot()" /> &nbsp;&nbsp;&nbsp;
+                            <br />
+                            <input type="button" style="color:black; font-weight:bold; font-size:large;" value="STOP" onclick="stopScanning()" />
+                            <br />
+                            <div id="upload_results" style="background-color:#eee;"></div>
+                        </td>
+                        <td>
+                            <div id="flashOut"> </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="w3-container">
+            <div class="w3-row-padding" style="margin-right:0.5%;">
+                <input type="submit" class="w3-button w3-black_tab w3-right" value="Save" onclick="InsertData()">
+            </div>
+        </div>
+        <script type="text/javascript" src="~/Scripts/jquery-1.4.2.js"></script>
+        <script type="text/javascript" src="~/Scripts/webcam.js"></script>
+        <script type="text/javascript" src="~/Scripts/index.js"></script>
+
+
+        <script type="text/javascript">
+        $(document).ready(function () {
+            BindCountry();
+            BindTransformer();
+            BindSmPointDGA();
+            BindSmPointOIL();
+            BindSampleType();
+
+            var date = new Date();
+            //alert(date.toDateString());
+            var dateString = date.toISOString().substr(0, 10);
+            $("input[type='date']").val(dateString);
+
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("TXTDate").setAttribute('max', today);
+        });
+
+    var selValue
+    $("#clrefDropDown").change(function () {
+        selValue = $(this).val();
+        $.ajax({
+            url: '@Url.Action("DisplayClrefData")',
+                type: 'post',
+            data: { clref: selValue },
+
+            success: function (p) {
+                p = JSON.parse(p);
+                let my_obj = { SubPrefix: p[0].SUBS_No };
+
+                $("#TxtInventory").val(p[0].INVENTORY_NO);
+                $("#TXTSerial").val(p[0].SERIAL_NO);
+                $("#TXTManufacture").val(p[0].MANUFACTURER);
+                $("#TXTSubName").val(p[0].SUBS_NAME);
+                $("#TXtSubNo").val(p[0].SUBS_No);
+                $("#TXtPosition").val(p[0].POSITION);
+                $("#TXtEquipment").val(p[0].EQUIPMENT);
+                $("#TXTSubPrefix").val(my_obj.SubPrefix.substr(0,2));
+                $("#TXTSampledBy").val(p[0].NAME);
+                $("#TXTClref").val(p[0].CLREF);
+
+                //IDD = empid;
+            },
+            error: function () {
+                alert('Record not edited !!');
+            }
+
+            });
+    });
+
+
+
+    var aa = "";
+    function BindCountry() {
+        debugger;
+        $.ajax({
+            type: 'post',
+            url: "/Dashboard/BindClref",
+            data: '{}',
+            success: function (p) {
+                if (typeof p === "undefined" || p.length === 0) {
+                    alert("Sample code not present for user!!");
+                } else {
+                    p = JSON.parse(p);
+                }
+                //p = JSON.parse(p);
+                //alert(''+p);
+
+                $("#clrefDropDown").find("tr:gt(0)").remove();
+
+                for (var i = 0; i < p.length; i++) {
+                    $("#clrefDropDown").append($('<option/>').attr("value", p[i].CODE).text(p[i].CODE));
+                }
+            },
+            error: function () {
+               alert('Sample code not found !!');
+                }
+
+        });
+    }
+
+    //For SampleType
+        function BindSampleType() {
+        debugger;
+        $.ajax({
+            type: 'post',
+            url: "/Dashboard/BindSampleType",
+            data: '{}',
+            success: function (p) {
+                if (typeof p === "undefined" || p.length === 0) {
+                    alert("Sample Type not present for user!!");
+                } else {
+                    p = JSON.parse(p);
+                }
+                //p = JSON.parse(p);
+                //alert(''+p);
+
+                $("#TXTSampType").find("tr:gt(0)").remove();
+
+                for (var i = 0; i < p.length; i++) {
+                    $("#TXTSampType").append($('<option/>').attr("value", p[i].SmTRef).text(p[i].SmTRef));
+                }
+            },
+            error: function () {
+                alert('Sample Type not found !!');
+            }
+
+        });
+    }
+
+    // For Transformer
+    function BindTransformer() {
+        //debugger;
+        $.ajax({
+            type: 'post',
+            url: "/Dashboard/BindTransformer",
+            data: '{}',
+            success: function (p) {
+                if (typeof p === "undefined" || p.length === 0) {
+                    alert("Transformer not present for user!!");
+                } else {
+                    p = JSON.parse(p);
+                }
+                //p = JSON.parse(p);
+                //alert(''+p);
+
+                $("#TXTtransformer").find("tr:gt(0)").remove();
+
+                for (var i = 0; i < p.length; i++) {
+                    $("#TXTtransformer").append($('<option/>').attr("value", p[i].Transformer).text(p[i].Transformer));
+                }
+            },
+            error: function () {
+                alert('Transformer data not found !!');
+            }
+
+        });
+    }
+
+    //For Sampling Point DGA   TXTSamplePoint
+    function BindSmPointDGA() {
+        //debugger;
+        $.ajax({
+            type: 'post',
+            url: "/Dashboard/BindSmPointDGA",
+            data: '{}',
+            success: function (p) {
+                if (typeof p === "undefined" || p.length === 0) {
+                    alert("Transformer not present for user!!");
+                } else {
+                    p = JSON.parse(p);
+                }
+                //p = JSON.parse(p);
+                //alert(''+p);
+
+                $("#TXTSamplePoint").find("tr:gt(0)").remove();
+
+                for (var i = 0; i < p.length; i++) {
+                    $("#TXTSamplePoint").append($('<option/>').attr("value", p[i].ValStr).text(p[i].ValStr));
+                }
+            },
+            error: function () {
+                alert('Sampling Point DGA data not found !!');
+            }
+
+        });
+    }
+
+    //For sampling Point OIL TXTSamplePOil
+    function BindSmPointOIL() {
+        //debugger;
+        $.ajax({
+            type: 'post',
+            url: "/Dashboard/BindSmPointOIL",
+            data: '{}',
+            success: function (p) {
+                if (typeof p === "undefined" || p.length === 0) {
+                    alert("Transformer not present for user!!");
+                } else {
+                    p = JSON.parse(p);
+                }
+                //p = JSON.parse(p);
+                //alert(''+p);
+
+                $("#TXTSamplePOil").find("tr:gt(0)").remove();
+
+                for (var i = 0; i < p.length; i++) {
+                    $("#TXTSamplePOil").append($('<option/>').attr("value", p[i].ValStr).text(p[i].ValStr));
+                }
+            },
+            error: function () {
+                alert('Sampling Point OIL data not found !!');
+            }
+
+        });
+    }
+
+        //debugger
+            function InsertData() {
+                var data = {
+                    SampleType: $('#TXTSampType').val(),
+                    OrderNo: $("#TXTorderNo").val(),
+                    Barcode: $("#OutListBoxHTML5").val(),
+                    ActivityNo: $("#TXTActivtyNo").val(),
+
+                    Transformer: $("#TXTtransformer").val(),
+                    Sample: $("#TXTSample").val(),
+                    Winding: $("#TXTWinding").val(),
+                    Ambient: $("#TXTAmbient").val(),
+
+                    //TestReson: $("#TXTTestReson").val(),
+
+                    Comment: $("#TXTComment").val(),
+                    SamplePoint: $("#TXTSamplePoint").val(),
+                    SamplePOil: $("#TXTSamplePOil").val(),
+
+                    Inventory: $("#TxtInventory").val(),
+                    Serial: $("#TXTSerial").val(),
+                    Manufacture: $("#TXTManufacture").val(),
+                    SubName: $("#TXTSubName").val(),
+
+                    SubPrefix: $("#TXTSubPrefix").val(),
+                    SubNo: $("#TXtSubNo").val(),
+                    Equipment: $("#TXtEquipment").val(),
+
+                    Date: $("#TXTDate").val(),
+                    SampledBy: $("#TXTSampledBy").val(),
+                    Clref: $("#TXTClref").val()
+                };
+                // Getting value of TXTtestResonOther txtbx if TXTTestReson have Other selected
+                if ($("#TXTTestReson").val() === "Other")//TXTtestResonOther
+                {
+                    data.TestReson = $("#TXTtestResonOther").val();
+                }
+                else {
+                    data.TestReson = $("#TXTTestReson").val();
+                }
+
+                var newdata = {
+                    SampleType: data.SampleType,
+                    OrderNo: data.OrderNo,
+                    Barcode: data.Barcode,
+                    ActivityNo: data.ActivityNo,
+
+                    Transformer: data.Transformer,
+                    Sample: data.Sample,
+                    Winding: data.Winding,
+                    Ambient: data.Ambient,
+
+                    TestReson: data.TestReson,
+
+                    Comment: data.Comment,
+                    SamplePoint: data.SamplePoint,
+                    SamplePOil: data.SamplePOil,
+
+                    Inventory: data.Inventory,
+                    Serial: data.Serial,
+                    Manufacture: data.Manufacture,
+                    SubName: data.SubName,
+
+                    SubPrefix: data.SubPrefix,
+                    SubNo: $("#TXtSubNo").val(),
+                    Equipment: $("#TXtEquipment").val(),
+
+                    Date: $("#TXTDate").val(),
+                    SampledBy: $("#TXTSampledBy").val(),
+                    Clref: $("#TXTClref").val()
+                };
+
+            $.ajax({
+                type: 'post',
+                url: "/Dashboard/Insertdata",
+                //data: '{}',
+                data: newdata,
+                success: function () {
+                    alert('Record Saved !!');
+                   // BindData();
+                },
+                error: function () {
+                    alert('Record not Saved !!');
+                }
+
+            });
+
+        }
+        </script>
+
+</body>
+</html>
+
+

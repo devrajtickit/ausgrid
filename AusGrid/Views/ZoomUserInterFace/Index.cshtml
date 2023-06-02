@@ -1,0 +1,1154 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    WebGrid grid = new WebGrid(source: Model.list1, canPage: true, rowsPerPage: 10, selectionFieldName: "selectedrow");
+    grid.Pager(WebGridPagerModes.FirstLast);
+    var totalPages = (int)Math.Ceiling((double)grid.TotalRowCount / grid.RowsPerPage);
+
+    // Get the current page number
+    var currentPage = grid.PageIndex + 1;
+
+    // Calculate the first and last page numbers
+    var firstPage = 1;
+    var lastPage = totalPages;
+
+    // Set the desired page numbers for first and last buttons
+    var firstButtonPage = firstPage;
+    var lastButtonPage = lastPage;
+
+    // Handle case when there are no records
+    if (totalPages == 0)
+    {
+        firstButtonPage = 0;
+        lastButtonPage = 0;
+    }
+
+    int currentPageIndex = grid.PageIndex + 1;
+    if (currentPageIndex <= 0)
+    {
+        currentPageIndex = 1;
+    }
+    WebGrid grid1 = new WebGrid(source: Model.list2, canPage: true, rowsPerPage: 10, selectionFieldName: "selectedrow");
+    grid1.Pager(WebGridPagerModes.FirstLast);
+    var totalPages1 = (int)Math.Ceiling((double)grid1.TotalRowCount / grid1.RowsPerPage);
+
+    // Get the current page number
+    var currentPage1 = grid1.PageIndex + 1;
+
+    // Calculate the first and last page numbers
+    var firstPage1 = 1;
+    var lastPage1 = totalPages1;
+
+    // Set the desired page numbers for first and last buttons
+    var firstButtonPage1 = firstPage1;
+    var lastButtonPage1 = lastPage1;
+
+    // Handle case when there are no records
+    if (totalPages1 == 0)
+    {
+        firstButtonPage1 = 0;
+        lastButtonPage1 = 0;
+    }
+
+}
+
+@Html.Raw(TempData["msg"])
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="~/Css/Ausgrid.css" rel="stylesheet" />
+<link href="~/Css/Ausgrid_mobile.css" rel="stylesheet" />
+<script src="~/Scripts/jqueryGrid1.min.js"></script>
+<script src="~/Scripts/jqueryGrid2.min.js"></script>
+<script src="~/Scripts/ZoomUserInterFace.js"></script>
+<link href="~/Css/index.css" rel="stylesheet" />
+
+<body>
+
+    <div class="w3-container">
+        <h2>Ausgrid</h2>
+    </div>
+
+    <div class="w3-bar w3-black_tab tabs">
+        <button class="w3-bar-item w3-button tablink w3-gray" onclick="openCity(event,'User')">User</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event,'Security_Role')">Security Role</button>
+        <button class="w3-bar-item w3-button tablink" onclick="openCity(event,'Password_Policy')">Password Policy</button>
+    </div>
+
+    <div id="User" class="w3-container city">
+        <br />
+
+        <div class="w3-container">
+            <button class="w3-button w3-black_tab" onclick="document.getElementById('Add_dialog').style.display='block'" style="width:auto;">Add</button>
+            <button class="w3-button w3-black_tab" onclick="document.getElementById('Edit_dialog').style.display='block'" style="width:auto;">Edit</button>
+            <button class="w3-button w3-black_tab" onclick="document.getElementById('Change_password_dialog').style.display='block'" style="width:auto;">Change password</button>
+        </div>
+
+
+        @*/*-----------------------------------------------------------User Add Model ------------------------------------------------*/*@
+
+
+        <form name="UserAddform" id="UserAddform" action="UserAddform" method="post">
+            <div id="Add_dialog" class="w3-modal">
+                <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 40%;">
+                    <header class="w3-container w3-black_tab">
+                        <span onclick="document.getElementById('Add_dialog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        <h4>Add User</h4>
+                    </header>
+                    <br />
+                    <div class="w3-container">
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Login/Email ID<span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" type="text" id="LoginName" name="LoginName" required>
+                                    <label for="name"></label>
+                                </div>
+                                <div class="w3-half">
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Password<span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" type="text" id="password" name="password" required>
+                                </div>
+                                <div class="w3-half">
+                                    <label>Confirm Password</label>
+                                    <input class="w3-input w3-border" type="text" id="confirmpassword" name="ConfirmPassword" required>
+                                    <span id='message1'></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>First Name<span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" type="text" id="firstName" name="firstName" required>
+                                    <label for="name"></label>
+                                </div>
+                                <div class="w3-half">
+                                    <label>Last Name</label>
+                                    <input class="w3-input w3-border" type="text" name="lastName">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Company Name</label>
+                                    <input class="w3-input w3-border" type="text" name="companyName">
+                                </div>
+                                <div class="w3-half">
+                                    <label>Phone</label>
+                                    <input class="w3-input w3-border" type="text" name="contactNo">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Security Role<span style="color:red;">*</span></label>
+                                    <select class="w3-input w3-border" id="SecurityRole" name="SecurityRole"> </select>
+                                </div>
+                                <div class="w3-half">
+                                    <label>Status<span style="color:red;">*</span></label>
+                                    @*<input class="w3-input w3-border" type="text" placeholder="Status">*@
+                                    <select class="w3-input w3-border" id="Status" name="status">
+                                        <option>Active</option>
+                                        <option>Suspanded</option>
+                                        <option>Close</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Job Status<span style="color:red;">*</span></label>
+
+                                    <input class="w3-input w3-border" id="txtjobstatus" name="jobStatus" type="text" placeholder="Empty for All">
+                                </div>
+                                <div class="w3-half">
+                                    <br />
+                                    <select class="w3-input w3-border" id="JobStatus" name="StudentGender">
+                                        <option value="No Entries">No Entries</option>
+                                        <option value="Incomplete">Incomplete</option>
+                                        <option value="Complete">Complete</option>
+                                        <option value="Finalised">Finalised</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Lims1 Client Ref<span style="color:red;">*</span></label>
+                                    <select class="w3-input w3-border" id="mySelect" onchange="if (this.options[this.selectedIndex].value =='clref'){document.UserAddform['clref'].style.visibility='visible'}else {document.UserAddform['clref'].style.visibility='hidden'};">
+                                        <option value="1">Show All Lims1 Client Ref</option>
+                                        <option value="clref">Apply Lims1 Client Ref</option>
+                                        @*<option value="2">Apply Multiple Lims1 Client Ref</option>*@
+                                    </select>
+                                    @*<input class="w3-input w3-border" type="text" placeholder="Job Status">*@
+                                </div>
+                                <div class="w3-half">
+                                    <br />
+                                    <input class="w3-input w3-border" type="text" name="clref" placeholder="Job Status" style="visibility:hidden;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+                    </div>
+
+
+                    <footer class="w3-container w3-black_tab">
+
+                        <input type="button" value="Cancel" class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Add_dialog').style.display='none'" />
+                        <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%" value="Submit">
+
+                        <br /><br />
+                    </footer>
+                </div>
+            </div>
+        </form>
+
+        @*/*--------------------------------------------- Edit Model ------------------------------------------------------------------*/*@
+        <form name="Edit_dialog11" id="Edit_dialog11" action="Edit_dialog11" method="post">
+            <div id="Edit_dialog" class="w3-modal">
+                <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 40%;">
+                    <header class="w3-container w3-black_tab">
+                        <span onclick="document.getElementById('Edit_dialog').style.display='none'"
+                              class="w3-button w3-display-topright">&times;</span>
+                        <h4>Edit User</h4>
+                    </header>
+                    <br />
+                    <div class="w3-container">
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Login/Email ID<span style="color:red;">*</span> </label>
+                                    <input class="w3-input w3-border" name="LoginName" type="text" id="txtloginname" style="background-color:lightgray" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="w3-row w3-section">
+                                <div class="w3-row-padding">
+                                    <div class="w3-half">
+                                        <label>Email</label>
+                                        <input class="w3-input w3-border" type="text" name="LoginName" id="txtloginname">
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>First Name<span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" name="firstName" type="text" id="txtfirstname">
+                                </div>
+                                <div class="w3-half">
+                                    <label>Last Name</label>
+                                    <input class="w3-input w3-border" name="lastName" id="txtlastname" type="text">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Company Name</label>
+                                    <input class="w3-input w3-border" name="companyName" type="text" id="txtcompanyname">
+                                </div>
+                                <div class="w3-half">
+                                    <label>Phone</label>
+                                    <input class="w3-input w3-border" name="contactNo" type="text" id="txtphoneno">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Security Role<span style="color:red;">*</span></label>
+                                    <select class="w3-input w3-border" id="SecurityRoleEdit" name="SecurityRole"> </select>
+                                </div>
+                                <div class="w3-half">
+                                    <label>Status<span style="color:red;">*</span></label>
+                                    @*<input class="w3-input w3-border" type="text" placeholder="Status">*@
+                                    <select class="w3-input w3-border" id="txtStatus" name="status">
+
+                                        <option value="1">Active</option>
+                                        <option value="2">Suspanded</option>
+                                        <option value="3">Close</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Job Status<span style="color:red;">*</span></label>
+
+                                    <input class="w3-input w3-border" type="text" id="txtjobsS" name="jobStatus" placeholder="Empty for All">
+                                </div>
+                                <div class="w3-half">
+                                    @*<label>Status</label>*@
+                                    <br />
+                                    @*<input class="w3-input w3-border" type="text" placeholder="Status">*@
+                                    <select class="w3-input w3-border" id="Status" name="StudentGender">
+                                        <option>No Entries</option>
+                                        <option>Incomplete</option>
+                                        <option>Complete</option>
+                                        <option>Finalised</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div class="w3-half">
+                                    <label>Lims1 Client Ref<span style="color:red;">*</span></label>
+                                    <select class="w3-input w3-border" id="mySelect" onchange="if (this.options[this.selectedIndex].value =='clref'){document.Edit_dialog11['clref'].style.visibility='visible'}else {document.Edit_dialog11['clref'].style.visibility='hidden'};">
+                                        <option value="1">Show All Lims1 Client Ref</option>
+                                        <option value="clref">Apply Lims1 Client Ref</option>
+                                        @*<option value="2">Apply Multiple Lims1 Client Ref</option>*@
+                                    </select>
+                                    @*<input class="w3-input w3-border" type="text" placeholder="Job Status">*@
+                                </div>
+                                <div class="w3-half">
+                                    <br />
+                                    <input class="w3-input w3-border" type="text" id="cl_ref" name="clref" placeholder="Client Reference" style="visibility:hidden;">
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <br />
+                    <footer class="w3-container w3-black_tab">
+                        <input type="button" value="Cancel" class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Edit_dialog').style.display='none'" />
+                        @*<button type="button" onclick="CloseModalPopup();">Cancel</button>
+                            <button class="w3-button1 w3-right" @Url.Action("Index", "ZoomUserInterFace") style="margin-top: 1.25%; width: auto; color: white; ">Cancel</button>*@
+                        <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%" value="OK">
+                        @*<button type="submit">Submit</button>*@
+
+                        <br /><br />
+                    </footer>
+                </div>
+            </div>
+        </form>
+
+        @*/*---------- Change Password Model ------------------*/*@
+
+        <form name="ChangePasswordform" action="changePwd" method="post">
+            <div id="Change_password_dialog" class="w3-modal">
+                <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                    <header class="w3-container w3-black_tab">
+                        <span onclick="document.getElementById('Change_password_dialog').style.display='none'"
+                              class="w3-button w3-display-topright">&times;</span>
+                        <h4>Change Password</h4>
+                    </header>
+                    <div class="w3-container">
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding" style="padding-bottom:5%;">
+                                <br />
+                                <div class="w3-col" style="padding-bottom:5%;">
+                                    <label>New Password</label>
+                                    <input class="w3-input w3-border" type="text" id="txtNewPass" name="NewPassword" placeholder="Password">
+                                </div>
+                                <div class="w3-col" style="padding-bottom:5%;">
+                                    <label>Confirm Password</label>
+                                    <input class="w3-input w3-border" type="text" id="txtConPass" name="ConfirmPassword" placeholder="Confirm Password">
+                                    <span id='message'></span>
+                                </div>
+                                <input class="w3-input w3-border" type="hidden" name="LoginName" id="txtlogin">
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="w3-container w3-black_tab">
+                        <button class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Change_password_dialog').style.display='none'">Cancel</button>
+                        <input type="submit" id="cpwd" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%;padding-left:4%;padding-right:4%;" value="OK">
+
+                        <br /><br />
+                    </footer>
+                </div>
+            </div>
+        </form>
+
+        @*/*----------Table------------------*/*@
+        <br />
+
+
+
+        @grid.GetHtml(
+
+
+        tableStyle: "w3-table-all w3-hoverable",
+        headerStyle: "web-table th",
+        footerStyle: "webgrid-footer",
+        selectedRowStyle: "selected", rowStyle: "row",
+        alternatingRowStyle: "row",
+        htmlAttributes: new { @id = "WebGrid", @class = "Grid" },
+
+
+        columns: grid.Columns(
+
+
+        grid.Column(columnName: "firstName", header: "User_Name"),
+        grid.Column(columnName: "lastName", header: "Last_Name"),
+        grid.Column(columnName: "LoginName", header: "Email_ID"),
+        grid.Column(columnName: "companyName", header: "Company_Name", canSort: false),
+        grid.Column(columnName: "userRole", header: "Security_Role", canSort: false),
+        grid.Column(columnName: "status", header: "Status", canSort: false),
+        grid.Column(columnName: "clRef", header: "Client_Reference", canSort: false),
+        grid.Column(columnName: "jobStatus", header: "Job_Status", canSort: false),
+        grid.Column(null, null, format: @<input type="hidden" name="contactNo" id="con" value="@item.contactNo" />)
+)
+
+)
+
+
+        </br>
+        <div class="webgrid-pager">
+            <span class="" style="margin-left:10px;">
+                Records Range @((currentPage - 1) * grid.RowsPerPage + 1) - @Math.Min(currentPage * grid.RowsPerPage, grid.TotalRowCount) of @grid.TotalRowCount
+            </span>
+            @if (firstButtonPage > 0)
+            {
+                <a href="?page=@firstButtonPage">First</a>
+            }
+        <!-- Remove the default numeric pager -->
+        @grid.Pager(mode: WebGridPagerModes.Numeric, numericLinksCount: 5)
+                @if (lastButtonPage > 0)
+                {
+                    <a href="?page=@lastButtonPage">Last</a>
+                }
+
+            </div>
+
+        @*<form action="@Url.Action("Index", "ZoomUserInterFace")" method="post">
+            <div class="webgrid-pager">
+                <span class="" style="margin-left:10px;">
+                    Records Range @((currentPage - 1) * grid1.RowsPerPage + 1) - @Math.Min(currentPage * grid.RowsPerPage, grid.TotalRowCount) of @grid.TotalRowCount
+                </span>*@
+                @*@if (firstButtonPage > 0)
+                {
+                    // <a href="?page=@firstButtonPage1">First</a>
+                    <button type="submit" class="btn-link" formaction="@Url.Action("Index", "ZoomUserInterFace", new { page = firstButtonPage })">First</button>
+                }*@
+
+                @*@grid1.Pager(mode: WebGridPagerModes.Numeric, numericLinksCount: 5)*@
+                @*@for (int i = 1; i <= grid.PageCount; i++)
+                {
+                    if (i == currentPageIndex)
+                    {
+                        <span>@i</span>
+                    }
+                    else
+                    {*@
+                        @*//<a href="@Url.Action("Index1", "ZoomUserInterFace", new { page = i })">@i</a>
+                        <button type="submit" class="btn-link" formaction="@Url.Action("Index", "ZoomUserInterFace", new { page = i })">@i</button>
+                    }
+                }
+
+                @if (lastButtonPage > 0)
+                {
+                    <button type="submit" class="btn-link" formaction="@Url.Action("Index", "ZoomUserInterFace", new { page = lastButtonPage })">Last</button>
+                }
+
+
+            </div>
+        </form>*@
+
+    </div>
+
+    @*--------------------------------------Security_Role_Tab---------------------------------*@
+
+    <div id="Security_Role" class="w3-container city" style="display:none;">
+        <br />
+        <div class="w3-container">
+            <button class="w3-button w3-black_tab" onclick="document.getElementById('Security_Add_dialog').style.display='block'" style="width:auto;">Add</button>
+            <button class="w3-button w3-black_tab" onclick="document.getElementById('Security_Edit_dialog').style.display='block'" style="width:auto;">Edit</button>
+        </div>
+        @*---------- Security_Role Add Model ------------------.............................*@
+        <form name="SecurityAddform" id="SecurityAddform" action="AddSecurityRole" method="post">
+            <div id="Security_Add_dialog" class="w3-modal">
+                <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                    <header class="w3-container w3-black_tab">
+                        <span onclick="document.getElementById('Security_Add_dialog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        <h4>Add Security Role</h4>
+                    </header>
+                    <br />
+                    <div class="w3-container">
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div>
+                                    <label>Role Name <span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" type="text" id="UsernameSRole" name="UsernameSRole" placeholder="Username" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div>
+                                    <label>Description <span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" type="text" id="DescriptionSRole" name="DescriptionSRole" placeholder="Description" required>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <fieldset>
+                            <legend>Menus</legend>
+                            <div>
+                                <input class="w3-check" type="checkbox" name="cboxRegistration" value="true">
+                                <label>Registration(Main Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" name="cboxsecurityCheck" value="true">
+                                <label>Current Registrations(Sub Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" name="cboxArchivedRegistrations" value="true">
+                                <label>Archived Registrations(Sub Menu)</label>
+                            </div>
+                            <br />
+                            <div>
+                                <input class="w3-check" type="checkbox" name="cboxSearch" value="true">
+                                <label>Search(Main Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" name="cboxSearchResults" value="true">
+                                <label>Search Results(Sub Menu)</label>
+                            </div>
+                        </fieldset>
+
+
+                    </div>
+                    <br />
+                    <footer class="w3-container w3-black_tab">
+                        <input type="button" value="Cancel" class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Security_Add_dialog').style.display='none'" />
+                        <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%" value="Submit">
+
+                        <br /><br />
+                    </footer>
+                </div>
+            </div>
+        </form>
+
+
+        @*---------- Security_Role Edit Model ------------------.............................*@
+        <form name="SecurityEditform" method="post" action="SecurityEditform">
+            <div id="Security_Edit_dialog" class="w3-modal">
+                <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                    <header class="w3-container w3-black_tab">
+                        <span onclick="document.getElementById('Security_Edit_dialog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                        <h4>Edit Security Role</h4>
+                    </header>
+                    <br />
+                    <div class="w3-container">
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div>
+                                    <label>Role Name <span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" id="name" name="name" type="text" placeholder="Username" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w3-row w3-section">
+                            <div class="w3-row-padding">
+                                <div>
+                                    <label>Description <span style="color:red;">*</span></label>
+                                    <input class="w3-input w3-border" id="description" name="description" type="text" placeholder="Description">
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <fieldset>
+                            <legend>Menus</legend>
+                            <div>
+                                <input class="w3-check" type="checkbox" id="ChkRegistration" name="ChkRegistration">
+                                <label>Registration(Main Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" id="ChkCurrentRegistrations" name="chkCurrentRegistrations">
+                                <label>Current Registrations(Sub Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" id="ChkArchivedRegistrations" name="ChkArchivedRegistrations">
+                                <label>Archived Registrations(Sub Menu)</label>
+                            </div>
+                            <br />
+                            <div>
+                                <input class="w3-check" type="checkbox" id="ChkSearch" name="ChkSearch">
+                                <label>Search(Main Menu)</label>
+                            </div>
+                            <div class="securityCheck">
+                                <input class="w3-check" type="checkbox" id="ChkSearchResults" name="ChkSearchResults">
+                                <label>Search Results(Sub Menu)</label>
+                            </div>
+                        </fieldset>
+                        <input type="text" hidden name="roleid" id="roleid" />
+
+
+                    </div>
+                    <br />
+                    <footer class="w3-container w3-black_tab">
+                        <input type="button" value="Cancel" class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Security_Edit_dialog').style.display='none'" />
+                        <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%" value="Update">
+
+                        <br /><br />
+                    </footer>
+                </div>
+            </div>
+
+        </form>
+
+        @*/*----------------------------------------------Security Role Table------------------*/*@
+        <br />
+
+        @grid1.GetHtml(
+
+      tableStyle: "w3-table-all w3-hoverable",
+      headerStyle: "web-table th",
+      footerStyle: "webgrid-footer1",
+      selectedRowStyle: "selected", rowStyle: "row",
+      alternatingRowStyle: "row",
+      htmlAttributes: new { @id = "WebGrid1", @class = "Grid" },
+        columns: grid1.Columns(
+            grid1.Column(columnName: "name", header: "Name"),
+            grid1.Column(columnName: "description", header: "Description"),
+            grid1.Column(null, null, format: @<input type="hidden" name="roleid" id="roleid" value="@item.roleid" />)
+
+)
+
+)
+
+
+        </br>
+        <div class="webgrid-pager">
+            <span class="" style="margin-left:10px;">
+                Records Range @((currentPage1 - 1) * grid1.RowsPerPage + 1) - @Math.Min(currentPage1 * grid1.RowsPerPage, grid1.TotalRowCount) of @grid1.TotalRowCount
+            </span>
+            @if (firstButtonPage1 > 0)
+            {
+                <a href="?page=@firstButtonPage1">First</a>
+            }
+            @*Remove the default numeric pager*@
+            @grid1.Pager(mode: WebGridPagerModes.Numeric, numericLinksCount: 5)
+            @if (lastButtonPage1 > 0)
+            {
+                <a href="?page=@lastButtonPage1">Last</a>
+            }
+
+        </div>
+
+    </div>
+
+    @*------------------------------------------Password_Policy_Tab------------------------------------------*@
+    <form action="pwdPolicy" method="post">
+        <div id="Password_Policy" class="w3-container city" style="display:none;">
+            <br />
+            <div class="w3-container">
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Min Length</label>
+
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MinLength" name="MinLength" placeholder="Min Length">
+                    </div>
+                    <div class="w3-half">
+                        <label>Max Length</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MaxLength" name="MaxLength" placeholder="Max Length">
+                    </div>
+                </div>
+                <br />
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Min Letter Length</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.LetterReqLength" name="LetterReqLength" placeholder="Min Letter Length">
+                    </div>
+                    <div class="w3-half">
+                        <label>Min Digit Length</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.DigitReqLength" name="DigitReqLength" placeholder="Min Digit Length">
+                    </div>
+                </div>
+                <br />
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Min Capital Letters</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.ChangeRequiredDay" name="ChangeRequiredDay" placeholder="Min Capital Letters">
+                    </div>
+                    <div class="w3-half">
+                        <label>Min Small Letters</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.ChangeWarningDay" name="ChangeWarningDay" placeholder="Min Small Letters">
+                    </div>
+                </div>
+                <br />
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Min Special Characters</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MustNotSame" name="MustNotSame" placeholder="Min Special Characters">
+                    </div>
+                    <div class="w3-half">
+                        <label>Change Required Day</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.DisableWrongPasswordAttempt" name="DisableWrongPasswordAttempt" placeholder="Change Required Day">
+                    </div>
+                </div>
+                <br />
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Warning Day</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.PreventLogonUnusedDays" name="PreventLogonUnusedDays" placeholder="Warning Day">
+                    </div>
+                    <div class="w3-half">
+                        <label>Must Not Same</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MinCapitalLetters" name="MinCapitalLetters" placeholder="Must Not Same">
+                    </div>
+                </div>
+                <br />
+                <div class="w3-row-padding">
+                    <div class="w3-half">
+                        <label>Wrong Password Attempt</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MinSmallLetters" name="MinSmallLetters" placeholder="Wrong Password Attempt">
+                    </div>
+                    <div class="w3-half">
+                        <label>Logon Unused Days</label>
+                        <input class="w3-input w3-border" type="text" value="@ViewBag.MinSpecialCharacters" name="MinSpecialCharacters" placeholder="Logon Unused Days">
+                    </div>
+                </div>
+                <br />
+
+                <div class="w3-row-padding" style="margin-right:0.5%;">
+                    <input type="submit" class="w3-button w3-black_tab w3-right" value="Update">
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+
+    <script>
+
+        $(function () {
+            var selectedValues1 = [];
+            $('#JobStatus').change(function () {
+
+                $("#JobStatus option:selected").each(function () {
+                    selectedValues1.push($(this).val());
+                    var selectedValue = $('#JobStatus').val();
+                    var ss = $('#txtjobstatus').val();
+                    if (selectedValue == ss.match(selectedValue)) {
+
+                        selectedValues1 = $.grep(selectedValues1, function (value) {
+                            return value != selectedValue;
+                        });
+
+                    }
+                    var svalue = $('#txtjobstatus');
+                    svalue.val(selectedValues1.join(","));
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        $('#modelClose').click(function () {
+            $('#UserAddform').hide();
+        });
+    </script>
+
+    @*<script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $("#LoginName").change(function () {
+                    var inputvalues = $(this).val();
+                    var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if (!regex.test(inputvalues)) {
+                        alert("invalid email id");
+                        return regex.test(inputvalues);
+                    }
+                });
+
+            });
+        </script>*@
+
+
+    <script>
+        $("#UserAddform").submit(function (event) {
+            var loginName = $("#LoginName").val();
+            var username = $("#firstName").val
+            var password = $("#password").val
+            var confirmpassword = $("#confirmpassword").val();
+
+            if (loginName == "" || username == "" || password == "" || confirmpassword == "") {
+                alert("Please fill  all mandatory fields.");
+                event.preventDefault();
+            }
+            if (confirmpassword == "") {
+                alert("please fill confirm password!!");
+                event.preventDefault();
+            }
+        });
+
+
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#confirmpassword").change(function () {
+                var password = $('#password').val();
+                var confirmPassword = $('#confirmpassword').val();
+
+                if (password != confirmPassword) {
+                    $('#message1').html('Not Matching').css('color', 'red');
+                    return false;
+                } else {
+                    $('#message1').html('Matching').css('color', 'green');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        //for securityRole dropdown add from
+        $(document).ready(function () {
+
+            $.ajax({
+                url: '/ZoomUserInterFace/GetItems',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var options = '';
+                    for (var i = 0; i < data.length; i++) {
+                        options += '<option value="' + data[i].roleId + '">' + data[i].name + '</option>';
+                    }
+                    $('#SecurityRole').html(options);
+                    $('#SecurityRoleEdit').html(options);
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#LoginName").change(function () {
+                var inputvalues = $(this).val();
+                var regex = @@"^[^@@\s]+@@[^@@\s]+\.[^@@\s]+$";
+                if (!regex.test(inputvalues)) {
+                    alert("invalid email id");
+                    return regex.test(inputvalues);
+                }
+            });
+
+        });
+    </script>
+
+    <script>
+        $("#SecurityAddform").submit(function (event) {
+            var UsernameSRole = $("#UsernameSRole").val();
+            var DescriptionSRole = $("#DescriptionSRole").val
+
+
+            if (UsernameSRole == "" || DescriptionSRole == "") {
+                alert("Please fill  all mandatory fields.");
+                event.preventDefault();
+            }
+
+        });
+
+
+    </script>
+
+    <script type="text/javascript">
+            $("body").on("click", "#WebGrid1 td", function () {
+                $("#WebGrid1 td").removeClass("selected");
+                $(this).closest("tr").find("td").addClass("selected");
+                var row = $(this).closest("tr");
+                var name = row.find("td").eq(0).html();
+                var description = row.find("td").eq(1).html();
+                var RoleID = row.find("#roleid").val();
+
+
+                $("#name").val(name);
+                $("#description").val(description);
+                $("#roleid").val(RoleID);
+
+                $.ajax({
+                    url: '@Url.Action("SecurityRoleCheckB")',
+                    type: 'post',
+                    data: { roleid: $("#roleid").val() },
+
+                    success: function (result) {
+                        if (result.success1) {
+                            $('#ChkRegistration').prop('checked', true);
+                        } else {
+                            $('#ChkRegistration').prop('checked', false);
+                        }
+
+                        if (result.success2) {
+                            $('#ChkCurrentRegistrations').prop('checked', true);
+                        } else {
+                            $('#ChkCurrentRegistrations').prop('checked', false);
+                        }
+
+                        if (result.success3) {
+                            $('#ChkArchivedRegistrations').prop('checked', true);
+                        } else {
+                            $('#ChkArchivedRegistrations').prop('checked', false);
+                        }
+
+                        if (result.success4) {
+                            $('#ChkSearch').prop('checked', true);
+                        } else {
+                            $('#ChkSearch').prop('checked', false);
+                        }
+
+                        if (result.success5) {
+                            $('#ChkSearchResults').prop('checked', true);
+                        } else {
+                            $('#ChkSearchResults').prop('checked', false);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred.');
+                    }
+                });
+            });
+    </script>
+
+    <script>
+
+        $("#txtConPass").change(function () {
+            var password = $('#txtNewPass').val();
+            var confirmPassword = $('#txtConPass').val();
+
+            if (password != confirmPassword) {
+                $('#message').html('Not Matching').css('color', 'red');
+
+                return false;
+            } else {
+                $('#message').html('Matching').css('color', 'green');
+            }
+        });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $("body").on("click", "#WebGrid td", function () {
+            $("#WebGrid").find("td").removeClass("selected");
+            $(this).closest("tr").find("td").addClass("selected");
+
+            var row = $(this).closest("tr");
+
+            var uname = row.find("td").eq(0).html();
+            var lastname = row.find("td").eq(1).html();
+            var loginname = row.find("td").eq(2).html();
+            var companyname = row.find("td").eq(3).html();
+            var status = row.find("td").eq(5).html();
+            var client_refrence = row.find("td").eq(6).html();
+            var jobstatus = row.find("td").eq(7).html();
+            var contactno = $("#con").val();
+
+            $("#txtusername").val(uname);
+            $("#txtfirstname").val(uname);
+            $("#txtlastname").val(lastname);
+            $("#txtloginname").val(loginname);
+            $("#txtcompanyname").val(companyname);
+            $("#txtjobsS").val(jobstatus);
+            $("#cl_ref").val(client_refrence);
+            $("#txtphoneno").val(contactno);
+            $("#txtlogin").val(loginname);
+
+
+
+            if (status == "Active") {
+                $("#txtStatus").val('1');
+            }
+            if (status == "Suspanded") {
+                $("#txtStatus").val('2');
+            }
+            if (status == "Close") {
+                $("#txtStatus").val('3');
+            }
+            if (client_refrence != " ") {
+                $("#cl_ref").show();
+                $("#cl_ref").val(client_refrence);
+
+                $("#mySelectID").val('apply');
+            }
+            if (client_refrence == "") {
+                $("#cl_ref").hide();
+                $("#mySelectID").val('1');
+            }
+
+        });
+
+    </script>
+
+
+    <script type="text/javascript">
+        $("body").on("click", "#WebGrid td", function () {
+            $("#WebGrid td").removeClass("selected");
+            $(this).closest("tr").find("td").addClass("selected");
+            var row = $(this).closest("tr");
+            var name = row.find("td").eq(0).html();
+            var description = row.find("td").eq(1).html();
+
+            $("#name").val(name);
+            $("#description").val(description);
+            $("#roleid").val(RoleID);
+        });
+    </script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        var tab = '@Request.QueryString["btn"]'; // get the tab parameter value from the query string
+        if (tab) {
+            $('a[href="#' + tab + '"]').tab('show'); // switch to the desired tab
+        }
+    });
+    </script>
+
+
+    <script>
+        function openCity(evt, cityName) {
+            var i, x, tablinks;
+            x = document.getElementsByClassName("city");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < x.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" w3-gray", "");
+            }
+            document.getElementById(cityName).style.display = "block";
+            evt.currentTarget.className += " w3-gray";
+        }
+    </script>
+    <script>
+        //for security Check EDIT checkbox
+
+        $(document).ready(function () {
+
+            $('#cboxRegistration').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#cboxsecurityCheck').prop('checked', true);
+                    $('#cboxArchivedRegistrations').prop('checked', true);
+                } else {
+                    $('#cboxsecurityCheck').prop('checked', false);
+                    $('#cboxArchivedRegistrations').prop('checked', false);
+                }
+            });
+
+            $('#cboxsecurityCheck,#cboxArchivedRegistrations').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#cboxRegistration').prop('checked', true);
+                }
+
+            });
+
+            $('#cboxsecurityCheck,#cboxArchivedRegistrations').change(function () {
+                if (!$("#cboxsecurityCheck").is(':checked') && !$("#cboxArchivedRegistrations").is(':checked')) {
+                    $('#cboxRegistration').prop('checked', false);
+
+                }
+            });
+
+            $('#cboxsecurityCheck,#cboxArchivedRegistrations').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#cboxRegistration').prop('checked', true);
+                }
+
+            });
+            // Check checkbox1 when checkbox2 is checked
+            $('#cboxSearch').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#cboxSearchResults').prop('checked', true);
+                } else {
+                    $('#cboxSearchResults').prop('checked', false);
+                }
+            });
+            $('#cboxSearchResults').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#cboxSearch').prop('checked', true);
+                } else {
+                    $('#cboxSearch').prop('checked', false);
+                }
+            });
+        });
+        //for security Check EDIT checkbox
+
+        $(document).ready(function () {
+
+            $('#ChkRegistration').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#ChkCurrentRegistrations').prop('checked', true);
+                    $('#ChkArchivedRegistrations').prop('checked', true);
+                } else {
+                    $('#ChkCurrentRegistrations').prop('checked', false);
+                    $('#ChkArchivedRegistrations').prop('checked', false);
+                }
+            });
+
+            $('#ChkCurrentRegistrations,#ChkArchivedRegistrations').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#ChkRegistration').prop('checked', true);
+                }
+
+            });
+
+            $('#ChkCurrentRegistrations,#ChkArchivedRegistrations').change(function () {
+                if (!$("#ChkCurrentRegistrations").is(':checked') && !$("#ChkArchivedRegistrations").is(':checked')) {
+                    $('#ChkRegistration').prop('checked', false);
+
+                }
+            });
+
+            $('#ChkCurrentRegistrations,#ChkArchivedRegistrations').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#ChkRegistration').prop('checked', true);
+                }
+
+            });
+            // Check checkbox1 when checkbox2 is checked
+            $('#ChkSearch').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#ChkSearchResults').prop('checked', true);
+                } else {
+                    $('#ChkSearchResults').prop('checked', false);
+                }
+            });
+            $('#ChkSearchResults').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#ChkSearch').prop('checked', true);
+                } else {
+                    $('#ChkSearch').prop('checked', false);
+                }
+            });
+        });
+    </script>
+
+
+
+</body>

@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "Ad_hoc_label_List";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+    var grid = new WebGrid(source: Model, canPage: true, rowsPerPage: 10, selectionFieldName: "SelectedRow");
+}
+<link href="~/Style/index.css" rel="stylesheet" />
+
+@Html.Raw(TempData["msg"])
+
+<br />
+<h3>Ad_hoc_label List</h3>
+<br />
+
+<div class="w3-container">
+
+    @grid.GetHtml(
+            tableStyle: "w3-table-all w3-hoverable",
+            headerStyle: "web-table th",
+            footerStyle: "webgrid-footer",
+
+            columns: grid.Columns(
+                @*grid.Column(format: @<a href="#SelectRow" onclick="selectRow(@item.firstName)">Select</a>),*@
+            grid.Column(columnName: "UREGREF", header: "UREGREF"),
+            grid.Column(columnName: "CLREF", header: "CLREF"),
+
+            grid.Column(format: (item) =>
+            {
+                var rowId = item.ID;
+                return new HtmlString($"<button class='reprint-button' data-row-id='{rowId}'>Reprint PDF</button>");
+            }),
+
+            grid.Column(format: (item) =>
+            {
+                var rowId = item.ID;
+                return new HtmlString($"<button class='delete-button' data-row-id='{rowId}'>Delete</button>");
+            })
+
+        )
+    )
+
+
+
+
+</div>
+
+<script src="~/Scripts/jqueryGrid2.min.js"></script>
+<script src="~/Scripts/jquery.datetimepicker.js"></script>
+@*<script src="jquery-ui-timepicker-addon.js"></script>*@
+<script src="~/Scripts/jquery-ui-timepicker-addon.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.reprint-button').click(function () {
+            var rowId = $(this).data('row-id');
+            window.location.href = '/Dashboard/AdhocPrintPDF?id=' + rowId;
+        });
+    });
+
+    /*FOR DELETE*/
+    $(document).ready(function () {
+        $('.delete-button').click(function () {
+            var rowId = $(this).data('row-id');
+            if (confirm("Are you sure you want to delete this item?")) {
+                $.ajax({
+                    url: '/Dashboard/DeleteAdhocList',
+                    type: 'POST',
+                    data: { id: rowId },
+                    success: function (result) {
+                        if (result.success) {
+                            // Refresh the grid by redirecting to the AdhocList action
+                            window.location.href = '/Dashboard/Ad_hoc_label_List';
+                        } else {
+                            // Display an error message
+                            alert("Failed to delete the item. Please try again.");
+                        }
+
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        alert("An error occurred while deleting the item.");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+

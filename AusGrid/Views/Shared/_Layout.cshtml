@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title- Lims1 Ausgrid</title>
+    <link href="~/Css/Ausgrid.css" rel="stylesheet" />
+    <link href="~/Css/Ausgrid_mobile.css" rel="stylesheet" />
+
+
+    <style>
+        .w3-black_tab {
+            background-color: #002349;
+            color: white;
+        }
+
+        .w3-right {
+            margin-right: auto;
+        }
+    </style>
+    <style>
+        .mySlides {
+            display: none;
+        }
+    </style>
+
+    @*<script type="text/jscript">
+            debugger
+            $(document).ready(function () {
+                var x = $("#LoginName").val();
+                var y = $("#password").val();
+                $("#submit").on("click", function () {
+                    if (@ViewBag.Message != null) {
+                        alert('username and password is null');
+                        $('#Login_dialog').modal('show');
+                        setTimeout(function () {
+                            $('#Login_dialog').modal('hide')
+                        }, 50000)
+                    }
+
+                        else {
+                    var div = $("#Login_dialog").text();
+                    alert(div)
+                }
+
+            });
+                });
+        </script>*@
+
+    <script>
+  $(document).ready(function () {
+    var loginFailedMsg = "@ViewBag.LoginFailedMsg";
+    if (loginFailedMsg) {
+      setTimeout(function(){
+        $('#login-failed-msg').html(loginFailedMsg);
+        $('#login-failed-msg').dialog({
+          title: "Login Failed",
+          modal: true,
+          buttons: {
+            Ok: function () {
+              $(this).dialog("close");
+            }
+          }
+        });
+      }, 5000); // change the time to show the popup box here in milliseconds
+    }
+  });
+    </script>
+
+
+
+</head>
+<body>
+    <br />
+    <img src="~/img/Ausgrid_logo.png" />
+    <br />
+
+    <div class="w3-bar w3-black_tab">
+        <div class="w3-dropdown-hover w3-right " style="margin-right:10%;">
+            <button class="w3-bar-item w3-button w3-black_tab" onclick="document.getElementById('Login_dialog').style.display='block'" style="width:auto;">Login</button>
+        </div>
+
+    </div>
+    @using (Html.BeginForm("LoginCheck", "Login"))
+    {
+        @*@Html.AntiForgeryToken() // this is for prevent CSRF attack
+            if (@ViewBag.Message != null)
+            {
+                <div id="Login_dialog" style="border: 1px solid red; display: none;">
+                    @ViewBag.Message
+                </div>
+            }*@
+        @*<form action="LoginChecked" method="post">*@
+        <div id="Login_dialog" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                <header class="w3-container w3-black_tab">
+                    <span onclick="document.getElementById('Login_dialog').style.display='none'"
+                          class="w3-button w3-display-topright">&times;</span>
+                    <h4 style="color:white;">Login</h4>
+                </header>
+                <div id="login-failed-msg" style="display:none;"></div>
+                <div class="w3-container">
+
+                    <div class="w3-row w3-section">
+                        <div class="w3-row-padding" style="padding-bottom:5%;">
+                            <br />
+
+                            <div class="w3-col" style="padding-bottom:5%;">
+                                <label>Username</label>
+                                <input id="LoginName" name="LoginName" class="w3-input w3-border" type="text" placeholder="User Name">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:5%;">
+                                <label>Password</label>
+                                <input id="password" name="password" class="w3-input w3-border" type="password" placeholder="Password">
+                            </div>
+                            <br />
+                            @*<input style="background-color: darkslategray;color:white;margin-left:38%; width:28%;height:15%;" type="submit" value="Login" />*@
+                            <input id="submit" type="submit" value="Login" style="background-color: #002349; color: white; margin-left: 38%; width: 28%; height: 15%;" />
+                        </div>
+                    </div>
+                </div>
+                <footer class="w3-container w3-black_tab">
+                    <br /><br />
+                </footer>
+            </div>
+        </div>
+    }
+    @*</form>*@
+    <div>
+        <br />
+        @RenderBody()
+
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Lims1 Ausgrid</p>
+        </footer>
+    </div>
+</body>
+</html>

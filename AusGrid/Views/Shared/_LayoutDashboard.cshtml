@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Css/Ausgrid.css" rel="stylesheet" />
+    <link href="~/Css/Ausgrid_mobile.css" rel="stylesheet" />
+    <link href="~/Style/index.css" rel="stylesheet" />
+   
+</head>
+<body>
+    <br />
+    <img src="~/img/Ausgrid_logo.png" />
+    <br />
+    <div class="w3-bar w3-black_tab">
+        @*<a href="#" class="w3-bar-item w3-button">Home</a>
+            <a href="#" class="w3-bar-item w3-button">Link 1</a>
+            <a href="#" class="w3-bar-item w3-button">Link 2</a>*@
+        <div class="w3-dropdown-hover w3-left " style="margin-left:14%;">
+            <button class="w3-button  w3-black_tab">Dashboard</button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                @*<button class="w3-bar-item w3-button" onclick="document.getElementById('Profile_dialog').style.display='block'" style="width:auto;">Profile</button>*@
+                <a href="@Url.Action("Pre_registration", "Dashboard")" class="w3-bar-item w3-button">Pre-registration</a>
+                @*<button class="w3-bar-item w3-button" onclick="document.getElementById('Change_Password_dialog').style.display='block'" style="width:auto;">Change password</button>*@
+                <a href="@Url.Action("Pre_registration_List", "Dashboard")" class="w3-bar-item w3-button">Pre-registration list</a>
+                <a href="@Url.Action("Ad_hoc_label", "Dashboard")" class="w3-bar-item w3-button">Ad-hoc label</a>
+                <a href="@Url.Action("Ad_hoc_label_List", "Dashboard")" class="w3-bar-item w3-button">Ad hoc label list</a>
+            </div>
+        </div>
+
+        <div class="w3-dropdown-hover w3-right " style="margin-right:10%;">
+            <button class="w3-button  w3-black_tab">My Account</button>
+            <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                <button class="w3-bar-item w3-button" onclick="document.getElementById('Profile_dialog').style.display='block'" style="width:auto;">Profile</button>
+                @*<a href="#" class="w3-bar-item w3-button">Profile</a>*@
+                <button class="w3-bar-item w3-button" onclick="document.getElementById('Change_Password_dialog').style.display='block'" style="width:auto;">Change password</button>
+                @*<a href="#" class="w3-bar-item w3-button">Change password</a>*@
+                <a href="@Url.Action("Login", "Login")" class="w3-bar-item w3-button">Logout</a>
+            </div>
+        </div>
+
+    </div>
+    @*-------------------------------------------Profile_dialog--------------------------------------------*@
+    <form name="Profileform">
+        <div id="Profile_dialog" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                <header class="w3-container w3-black_tab">
+                    <span onclick="document.getElementById('Profile_dialog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                    <h4>Profile</h4>
+                </header>
+                <div class="w3-container">
+
+                    <div class="w3-row w3-section">
+                        <div class="w3-row-padding" style="padding-bottom:2%;">
+                            <br />
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>Login Name</label>
+                                <input class="w3-input w3-border" type="text" id="txtLoginName1" name="LoginName" value="@ViewBag.Data1" style="background-color:lightgray" readonly>
+                            </div>
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>First Name</label>
+                                <input class="w3-input w3-border" type="text" value="@ViewBag.Data2">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>Last Name</label>
+                                <input class="w3-input w3-border" type="text" value="@ViewBag.Data3">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>Contact Phone</label>
+                                <input class="w3-input w3-border" type="text" value="@ViewBag.Data4">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>Company Name</label>
+                                <input class="w3-input w3-border" type="text" readonly value="@ViewBag.Data5" style="background-color:lightgray">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:2%;">
+                                <label>Lims1 Client Ref.</label>
+                                <input class="w3-input w3-border" type="text" readonly style="background-color:lightgray">
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <footer class="w3-container w3-black_tab">
+                    <button class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Profile_dialog').style.display='none'">Cancel</button>
+                    <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%;padding-left:4%;padding-right:4%;" value="Update">
+
+                    <br /><br />
+                </footer>
+            </div>
+        </div>
+    </form>
+    @*-------------------------------------------Profile_dialog--------------------------------------------*@
+    <form name="ProfileChangePasswordform" action="changePwdAdmin" method="post">
+        <div id="Change_Password_dialog" class="w3-modal">
+            <div class="w3-modal-content w3-animate-top w3-card-4" style="width:30%;">
+                <header class="w3-container w3-black_tab">
+                    <span onclick="document.getElementById('Change_Password_dialog').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                    <h4>Change Password</h4>
+                </header>
+                <div class="w3-container">
+
+                    <div class="w3-row w3-section">
+                        <div class="w3-row-padding" style="padding-bottom:5%;">
+                            <br />
+                            <div class="w3-col" style="padding-bottom:5%;">
+                                <label>New Password</label>
+                                <input class="w3-input w3-border" name="NewPassword" type="password" placeholder="Password">
+                            </div>
+                            <div class="w3-col" style="padding-bottom:5%;">
+                                <label>Confirm Password</label>
+                                <input class="w3-input w3-border" name="ConfirmPassword" type="password" placeholder="Confirm Password">
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <footer class="w3-container w3-black_tab">
+                    <button class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Change_Password_dialog').style.display='none'">Cancel</button>
+                    <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%;padding-left:4%;padding-right:4%;" value="Update">
+
+                    <br /><br />
+                </footer>
+            </div>
+        </div>
+    </form>
+    <div style="margin-left:15%; margin-right:15%;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Lims1 Ausgrid</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+﻿@model List<Ausgrid.Models.PreList_Model>
+
+@{
+    ViewBag.Title = "Pre_registration_List";
+    Layout = "~/Views/Shared/_LayoutDashboard.cshtml";
+    var grid = new WebGrid(source: Model, canPage: true, rowsPerPage: 10, selectionFieldName: "SelectedRow");
+}
+<link href="~/Css/index.css" rel="stylesheet" />
+
+<br />
+<h3>Pre-registration List</h3>
+<br />
+
+<div class="w3-container">
+    @grid.GetHtml(
+          tableStyle: "w3-table-all w3-hoverable",
+          headerStyle: "web-table th",
+          footerStyle: "webgrid-footer1",
+          selectedRowStyle: "selected", rowStyle: "row",
+          alternatingRowStyle: "row",
+          htmlAttributes: new { @id = "WebGrid1", @class = "Grid" },
+
+         columns: grid.Columns(
+             grid.Column(columnName: "Reference", header: "Reference", format: (item) =>
+             {
+                 var reference = item.Reference.ToString(); // Get the reference value
+                 var link = $"<a href='#' onclick='openPopup(\"{reference}\")'>{reference}</a>";
+                 return new HtmlString(link);
+             }),
+// grid.Column(columnName: "Reference", header: "Reference", format: (item) =>
+//{
+//    var reference = item.Reference.ToString(); // Get the reference value
+//    var link = $"<a href='/Dashboard/GetPopupData?Reference={reference}' target='_blank'>{reference}</a>";
+//    return new HtmlString(link);
+//}),
+
+//grid.Column(columnName: "Reference", header: "Reference", format: (item) =>
+//{
+//    var reference = item.Reference.ToString(); // Get the reference value
+//    var link = $"<a href='#' onclick='openPopup(\"{reference}\")'>{reference}</a>";
+//    return new HtmlString(link);
+//}),
+    @*grid.Column(format: @<a href="#SelectRow" onclick="selectRow(@item.firstName)">Select</a>),*@
+//grid.Column(format: (item) => new HtmlString($"<a href='#' onclick='openPopup(\"{item.Reference}\")'>{item.Reference}</a>"), header: "Reference"),
+//grid.Column(columnName: "Reference", header: "Reference"),
+grid.Column(columnName: "RegDate", header: "Reg Date"),
+grid.Column(columnName: "SubsName", header: "Sub Name", canSort: false),
+grid.Column(columnName: "PositionNo", header: "Position No", canSort: false),
+grid.Column(columnName: "SampledBy", header: "Sampled By", canSort: false),
+grid.Column(columnName: "ClientRef", header: "Client Ref", canSort: false),
+grid.Column(columnName: "Status", header: "Status", canSort: false)
+
+)
+)
+</div>
+
+
+<div id="Pre_Reg_List" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4" style="width: 40%;">
+        <header class="w3-container w3-black_tab">
+            <span onclick="document.getElementById('Pre_Reg_List').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+            <h4>Information Pre_Registration</h4>
+        </header>
+        <br />
+        <form name="PreReg" id="PreReg">
+            <div class="w3-container" id="inputAllField">
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        <label>Reference</label>
+                        <input class="w3-input w3-border" type="text" id="TXTReference">
+                    </div>
+
+                    <div class="w3-quarter">
+                        <label>Sample point code</label>
+                        <input class="w3-input w3-border" id="clrefDropDown" name="clrefDropDown" type="text">
+
+                    </div>
+                </div>
+
+
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        <label>Sample Type</label>
+                        <input class="w3-input w3-border" type="text" id="TXTSampType">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Work Order No</label>
+                        <input class="w3-input w3-border" type="text" id="TXTorderNo">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Operation Activity No</label>
+                        <input class="w3-input w3-border" type="text" id="TXTActivtyNo">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Transformer</label>
+                        <input class="w3-input w3-border" type="text" id="TXTtransformer">
+                    </div>
+
+                </div>
+                @*<br />*@
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        <label>Sample</label>
+                        <input class="w3-input w3-border" type="text" id="TXTSample">
+                    </div>
+
+                    <div class="w3-quarter">
+                        <label>Winding</label>
+                        <input class="w3-input w3-border" type="text" id="TXTWinding">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Ambient</label>
+                        <input class="w3-input w3-border" type="text" id="TXTAmbient">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Sample Point (DGA)</label>
+                        <input class="w3-input w3-border" type="text" id="TXTSamplePoint">
+
+                    </div>
+
+                </div>
+
+                @*<br />*@
+
+                @*<br />*@
+                <div class="w3-row-padding">
+                    <div class="w3-quarter">
+                        <label>Sample Point (Oil Screen)</label>
+                        <input class="w3-input w3-border" type="text" id="TXTSamplePOil">
+                    </div>
+                    <div class="w3-quarter">
+                        <label>Comment</label>
+                        <input class="w3-input w3-border" type="text" id="TXTComment">
+                    </div>
+
+
+                    <div class="w3-quarter">
+                        <label>Test Reason</label>
+                        <input class="w3-input w3-border" type="text" id="TXTTestReson">
+                    </div>
+
+                </div>
+            </div>
+        </form>
+        @*<br />*@
+        @*--------------------Read only field---------------------*@
+
+
+        <div class="w3-container">
+            <div class="w3-row-padding">
+                <div class="w3-quarter">
+                    <label>Inventory No</label>
+                    <input class="w3-input w3-border" id="TxtInventory" type="text" placeholder="Inventory No" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Serial No</label>
+                    <input class="w3-input w3-border" id="TXTSerial" type="text" placeholder="Serial No" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Manufacturer</label>
+                    <input class="w3-input w3-border" id="TXTManufacture" type="text" placeholder="Manufacturer" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Sub Name</label>
+                    <input class="w3-input w3-border" id="TXTSubName" type="text" placeholder="Sub Name" readonly>
+                </div>
+
+
+            </div>
+            @*<br />*@
+            <div class="w3-row-padding">
+
+                <div class="w3-quarter">
+                    <label>Sub Prefix</label>
+                    <input class="w3-input w3-border" id="TXTSubPrefix" type="text" placeholder="Sub Prefix" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Sub no</label>
+                    <input class="w3-input w3-border" id="TXtSubNo" type="text" placeholder="Sub no" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Position No</label>
+                    <input class="w3-input w3-border" id="TXtPosition" type="text" placeholder="Position No" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Equipment</label>
+                    <input class="w3-input w3-border" id="TXtEquipment" type="text" placeholder="Equipment" readonly>
+                </div>
+            </div>
+            @*<br />*@
+            <div class="w3-row-padding">
+
+                <div class="w3-quarter">
+                    <label>Date Sampled</label>
+                    <input class="w3-input w3-border" id="TXTDate" type="text" placeholder="Date Sampled">
+
+                </div>
+                <div class="w3-quarter">
+                    <label>Sampled by</label>
+                    <input class="w3-input w3-border" id="TXTSampledBy" type="text" placeholder="Sampled by" readonly>
+                </div>
+                <div class="w3-quarter">
+                    <label>Clref</label>
+                    <input class="w3-input w3-border" id="TXTClref" type="text" placeholder="Clref">
+                </div>
+
+            </div>
+        </div>
+        <br /><br />
+        <footer class="w3-container w3-black_tab">
+
+            @*<input type="button" value="Cancel" class="w3-button1 w3-right" style="margin-top: 1.25%; width: auto; color: white; " onclick="document.getElementById('Add_dialog').style.display='none'" />
+                <input type="submit" class="w3-button1 w3-right" style="color:white;width:auto;margin-top:1.25%; margin-right:1%" value="Submit">*@
+
+            <br /><br />
+        </footer>
+    </div>
+</div>
+
+
+<script>
+    function openPopup(reference) {
+        // Populate the input field with the reference value
+        $("#TXTReference").val(reference);
+
+        // Show the popup
+        $("#Pre_Reg_List").show();
+
+        // Hit the action method using AJAX
+        $.ajax({
+            url: '/Dashboard/GetPopupData',
+            type: 'POST',
+            data: { reference: reference },
+            success: function (result) {
+                // Handle the success response from the server
+                // Update the necessary elements with the returned data
+                // For example:
+                // $("#popupContent").html(result);
+                // $("#popupBox").show();
+            },
+            error: function (error) {
+                // Handle any errors that occur during the request
+                alert('Error: ' + error);
+            }
+        });
+    }
+</script>
+
+
+@*<script type="text/javascript">
+                $("body").on("click", "#WebGrid1 td", function () {
+                    $("#WebGrid1 td").removeClass("selected");
+                    $(this).closest("tr").find("td").addClass("selected");
+                    var row = $(this).closest("tr");
+                    var reference = row.find("td").eq(0).html();
+                    alert(reference);
+
+
+                    $("#TXTReference").val(reference);
+
+
+                    $.ajax({
+                        url: '@Url.Action("GetPopupData")',
+                        type: 'post',
+                        data: { reference: $("#TXTReference").val() },
+
+                        success: function (result) {
+                            //if (result.success1) {
+                            //    $('#ChkRegistration').prop('checked', true);
+                            //}
+                        },
+                        error: function () {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+    </script>*@
